@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { assetPath } from '@/lib/assetPath';
 
 const navLinks = [
   { name: 'Solutions', href: '#solutions' },
@@ -80,8 +81,8 @@ export default function Navbar() {
               <img
                 src={
                   isScrolled
-                    ? '/brand/grecho-logo-blue.png?v=solid-transparent-20260603'
-                    : '/brand/grecho-logo-white.png?v=solid-transparent-20260603'
+                    ? assetPath('/brand/grecho-logo-blue.png?v=solid-transparent-20260603')
+                    : assetPath('/brand/grecho-logo-white.png?v=solid-transparent-20260603')
                 }
                 alt="GRECHO"
                 className="h-auto w-[132px] object-contain transition-all duration-300 sm:w-[170px] xl:w-[190px]"

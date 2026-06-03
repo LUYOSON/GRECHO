@@ -1,4 +1,5 @@
 import { Linkedin, Twitter, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { assetPath } from '@/lib/assetPath';
 
 const productLinks = [
   { name: 'Acoustic Ceiling & Wall Systems', href: '#products' },
@@ -62,7 +63,7 @@ export default function Footer() {
             {/* Company Info */}
             <div className="lg:col-span-1">
               <img
-                src="/brand/grecho-logo-white.png?v=solid-transparent-20260603"
+                src={assetPath('/brand/grecho-logo-white.png?v=solid-transparent-20260603')}
                 alt="GRECHO"
                 className="mb-6 h-auto w-[220px] max-w-full"
               />
