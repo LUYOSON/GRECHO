@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Layers, MessageCircle } from 'lucide-react';
 import gsap from 'gsap';
 
-const heroVideoPath = '/videos/banner.mp4';
-const heroPoster = '/homepage-generated/hero-poster.jpg';
+const heroVideoPath = '/videos/banner.mp4?v=20260603';
+const heroPoster = '/homepage-generated/hero-poster.jpg?v=20260603';
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);

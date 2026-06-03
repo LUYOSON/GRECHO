@@ -18,7 +18,7 @@ const products = [
       'Sample coordination for board mockups',
       'Technical data package support',
     ],
-    image: '/homepage-generated/solution-acoustic-ceiling-wall.jpg',
+    image: '/homepage-generated/solution-acoustic-ceiling-wall.jpg?v=20260603',
     color: 'from-blue-500/30 to-cyan-500/30',
   },
   {
@@ -33,7 +33,7 @@ const products = [
       'Fire and compliance document support',
       'Sample-to-production matching',
     ],
-    image: '/homepage-generated/solution-mineral-wool-board.jpg',
+    image: '/homepage-generated/solution-mineral-wool-board.jpg?v=20260603',
     color: 'from-orange-500/30 to-red-500/30',
   },
   {
@@ -48,7 +48,7 @@ const products = [
       'Technical documentation request support',
       'Prototype sample coordination',
     ],
-    image: '/homepage-generated/solution-gypsum-board.jpg',
+    image: '/homepage-generated/solution-gypsum-board.jpg?v=20260603',
     color: 'from-green-500/30 to-emerald-500/30',
   },
   {
@@ -63,7 +63,7 @@ const products = [
       'Fire compliance document coordination',
       'Board application intake checklist',
     ],
-    image: '/homepage-generated/solution-pir-pur-etics.jpg',
+    image: '/homepage-generated/solution-pir-pur-etics.jpg?v=20260603',
     color: 'from-amber-500/30 to-orange-500/30',
   },
 ];
