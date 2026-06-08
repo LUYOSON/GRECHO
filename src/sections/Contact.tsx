@@ -1,453 +1,372 @@
 import { useEffect, useRef, useState } from 'react';
-import { Send, Mail, Phone, MapPin, CheckCircle, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  ArrowRight,
+  CheckCircle2,
+  ChevronDown,
+  FileText,
+  Loader2,
+  Mail,
+  MapPin,
+  PackageCheck,
+  Phone,
+  Send,
+} from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const requestRoutes = [
+  {
+    icon: PackageCheck,
+    title: 'Request a Sample',
+    description: 'Start sample direction from application type and board structure.',
+  },
+  {
+    icon: FileText,
+    title: 'Request Technical Review',
+    description: 'Ask for the document level that fits your project stage.',
+  },
+];
+
 const applicationFields = [
-  'Acoustic Ceiling/Wall Panels',
-  'Insulation Systems',
-  'Gypsum Board',
-  'Roofing Membranes',
-  'Other',
+  'Acoustic Ceiling & Wall Systems',
+  'Mineral Wool Insulation Boards',
+  'Gypsum Board Systems',
+  'PIR / PUR / ETICS Systems',
+  'Other Board Application',
 ];
 
 const coreMaterials = [
   'Glass Wool',
   'Rock Wool',
-  'PIR/PUR Foam',
   'Gypsum',
-  'Calcium Silicate',
-  'Other',
+  'PIR / PUR Foam',
+  'ETICS / Exterior Board',
+  'Other Core Material',
 ];
 
+const initialFormState = {
+  companyName: '',
+  contactPerson: '',
+  email: '',
+  phone: '',
+  applicationField: '',
+  coreMaterial: '',
+  reviewNeeds: '',
+};
+
 export default function Contact() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [formData, setFormData] = useState(initialFormState);
+  const [reviewType, setReviewType] = useState('sample');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [applicationField, setApplicationField] = useState('');
-  const [coreMaterial, setCoreMaterial] = useState('');
-  const [formError, setFormError] = useState<string | null>(null);
-
-  const scrollFormIntoView = () => {
-    if (!formRef.current) return;
-    const top = Math.max(formRef.current.getBoundingClientRect().top + window.scrollY - 96, 0);
-    window.scrollTo({ top, behavior: 'smooth' });
-  };
-
-  const handleApplicationFieldChange = (value: string) => {
-    setApplicationField(value);
-    if (value && coreMaterial) setFormError(null);
-  };
-
-  const handleCoreMaterialChange = (value: string) => {
-    setCoreMaterial(value);
-    if (applicationField && value) setFormError(null);
-  };
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const triggers: ScrollTrigger[] = [];
-    
-    const ctx = gsap.context(() => {
-      // Title animation
-      const titleTrigger = ScrollTrigger.create({
-        trigger: titleRef.current,
-        start: 'top 80%',
-        onEnter: () => {
-          gsap.fromTo(
-            titleRef.current?.querySelectorAll('.animate-item') || [],
-            { y: 40, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out' }
-          );
-        },
-        once: true,
-      });
-      triggers.push(titleTrigger);
 
-      // Form animation
-      const formTrigger = ScrollTrigger.create({
-        trigger: formRef.current,
-        start: 'top 80%',
-        onEnter: () => {
-          gsap.fromTo(
-            formRef.current,
-            { y: 60, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
-          );
-        },
-        once: true,
-      });
-      triggers.push(formTrigger);
+    const ctx = gsap.context(() => {
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: contentRef.current,
+          start: 'top 82%',
+          once: true,
+          onEnter: () => {
+            gsap.fromTo(
+              contentRef.current?.querySelectorAll('.contact-reveal') || [],
+              { y: 34, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.72, stagger: 0.08, ease: 'power3.out' }
+            );
+          },
+        })
+      );
     }, sectionRef);
 
     return () => {
-      triggers.forEach(t => t.kill());
+      triggers.forEach((trigger) => trigger.kill());
       ctx.revert();
     };
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const updateField = (field: keyof typeof initialFormState, value: string) => {
+    setFormData((current) => ({ ...current, [field]: value }));
+    if (message) setMessage(null);
+  };
 
-    if (!applicationField || !coreMaterial) {
-      setFormError('Please select both an application field and core material before submitting.');
-      scrollFormIntoView();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!formData.email.trim()) {
+      setMessage('Please enter your email address.');
       return;
     }
 
-    setFormError(null);
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      setMessage('Please enter a valid email address.');
+      return;
+    }
+
+    setMessage(null);
     setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    
+    await new Promise((resolve) => window.setTimeout(resolve, 900));
     setIsSubmitting(false);
-    setIsSubmitted(true);
-    requestAnimationFrame(scrollFormIntoView);
+    setMessage(
+      reviewType === 'sample'
+        ? 'Sample request path received. GRECHO will coordinate the next review step.'
+        : 'Technical review request received. GRECHO will route the suitable document level.'
+    );
   };
 
   return (
-    <section
-      id="contact"
-      ref={sectionRef}
-      className="section-padding bg-fog relative overflow-hidden"
-    >
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <defs>
-            <pattern id="contact-dots" width="30" height="30" patternUnits="userSpaceOnUse">
-              <circle cx="2" cy="2" r="1.5" fill="#0047AB" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#contact-dots)" />
-        </svg>
-      </div>
+    <section id="contact" ref={sectionRef} className="bg-[#f5f8f6] pb-16 pt-8 sm:pb-20 lg:pb-24">
+      <div ref={contentRef} className="container-wide">
+        <div className="contact-reveal overflow-hidden rounded-lg bg-[#1b4aa1] text-white shadow-2xl shadow-[#1b4aa1]/20">
+          <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_1.05fr] lg:p-10">
+            <div className="max-w-2xl">
+              <p className="mb-4 inline-flex rounded-lg bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[#bfdbfe]">
+                Start Your Next Project Review
+              </p>
+              <h2 className="text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+                Start your next fiberglass facer review with GRECHO.
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-white/70">
+                Whether you are evaluating acoustic boards, insulation systems, gypsum
+                applications or exterior wall assemblies, GRECHO can help identify a
+                fiberglass facer direction aligned with your project goals.
+              </p>
 
-      <div className="container-wide relative z-10">
-        {/* Section Header */}
-        <div ref={titleRef} className="text-center max-w-3xl mx-auto mb-16">
-          <span className="animate-item inline-block text-[#1b4aa1] text-sm font-semibold tracking-wider uppercase mb-4">
-            Technical Documentation Access
-          </span>
-          <h2 className="animate-item text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 mb-6">
-            Request the document level that fits{' '}
-            <span className="text-gradient">your review stage.</span>
-          </h2>
-          <p className="animate-item text-lg text-muted-foreground">
-            Tell us the application stage and documents you need. GRECHO will coordinate
-            the right resource level for your technical review.
-          </p>
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                {requestRoutes.map((route) => {
+                  const Icon = route.icon;
+                  const isActive =
+                    (reviewType === 'sample' && route.title.includes('Sample')) ||
+                    (reviewType === 'technical' && route.title.includes('Technical'));
+
+                  return (
+                    <button
+                      key={route.title}
+                      type="button"
+                      onClick={() => setReviewType(route.title.includes('Sample') ? 'sample' : 'technical')}
+                      aria-pressed={isActive}
+                      className={`rounded-lg border p-4 text-left transition-all duration-300 ${
+                        isActive
+                          ? 'border-white/35 bg-white/[0.18] text-white'
+                          : 'border-white/[0.12] bg-white/[0.08] text-white hover:border-white/25 hover:bg-white/[0.12]'
+                      }`}
+                    >
+                      <Icon className="mb-5 h-5 w-5" />
+                      <span className="block text-base font-bold">{route.title}</span>
+                      <span className="mt-2 block text-sm leading-relaxed text-white/70">
+                        {route.description}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="rounded-lg bg-white p-5 text-slate-950 sm:p-6"
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <label htmlFor="company-name" className="text-sm font-semibold text-slate-950">
+                    Company Name
+                  </label>
+                  <input
+                    id="company-name"
+                    type="text"
+                    value={formData.companyName}
+                    onChange={(event) => updateField('companyName', event.target.value)}
+                    placeholder="Your company name"
+                    className="min-h-12 w-full rounded-lg border border-slate-200 px-4 text-base outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-[#1b4aa1] focus:ring-4 focus:ring-[#1b4aa1]/10"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="contact-person" className="text-sm font-semibold text-slate-950">
+                    Contact Person
+                  </label>
+                  <input
+                    id="contact-person"
+                    type="text"
+                    value={formData.contactPerson}
+                    onChange={(event) => updateField('contactPerson', event.target.value)}
+                    placeholder="Full name"
+                    className="min-h-12 w-full rounded-lg border border-slate-200 px-4 text-base outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-[#1b4aa1] focus:ring-4 focus:ring-[#1b4aa1]/10"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="email-address" className="text-sm font-semibold text-slate-950">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="email-address"
+                    type="email"
+                    value={formData.email}
+                    onChange={(event) => updateField('email', event.target.value)}
+                    placeholder="your@email.com"
+                    className="min-h-12 w-full rounded-lg border border-slate-200 px-4 text-base outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-[#1b4aa1] focus:ring-4 focus:ring-[#1b4aa1]/10"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="phone-number" className="text-sm font-semibold text-slate-950">
+                    Phone Number
+                  </label>
+                  <input
+                    id="phone-number"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(event) => updateField('phone', event.target.value)}
+                    placeholder="+1 (555) 000-0000"
+                    className="min-h-12 w-full rounded-lg border border-slate-200 px-4 text-base outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-[#1b4aa1] focus:ring-4 focus:ring-[#1b4aa1]/10"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="application-field" className="text-sm font-semibold text-slate-950">
+                    Application Field
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="application-field"
+                      value={formData.applicationField}
+                      onChange={(event) => updateField('applicationField', event.target.value)}
+                      className="min-h-12 w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 pr-11 text-base text-slate-700 outline-none transition-all duration-300 focus:border-[#1b4aa1] focus:ring-4 focus:ring-[#1b4aa1]/10"
+                    >
+                      <option value="">Select application</option>
+                      {applicationFields.map((field) => (
+                        <option key={field} value={field}>
+                          {field}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="core-material" className="text-sm font-semibold text-slate-950">
+                    Core Material
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="core-material"
+                      value={formData.coreMaterial}
+                      onChange={(event) => updateField('coreMaterial', event.target.value)}
+                      className="min-h-12 w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 pr-11 text-base text-slate-700 outline-none transition-all duration-300 focus:border-[#1b4aa1] focus:ring-4 focus:ring-[#1b4aa1]/10"
+                    >
+                      <option value="">Select material</option>
+                      {coreMaterials.map((material) => (
+                        <option key={material} value={material}>
+                          {material}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-2">
+                <label htmlFor="review-needs" className="text-sm font-semibold text-slate-950">
+                  Document Level & Review Needs
+                </label>
+                <textarea
+                  id="review-needs"
+                  value={formData.reviewNeeds}
+                  onChange={(event) => updateField('reviewNeeds', event.target.value)}
+                  placeholder="Tell us whether you need a product brief, color TDS, full TDS or test report coordination..."
+                  rows={4}
+                  className="w-full resize-none rounded-lg border border-slate-200 px-4 py-3 text-base outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-[#1b4aa1] focus:ring-4 focus:ring-[#1b4aa1]/10"
+                />
+              </div>
+
+              {message ? (
+                <p
+                  className={`mt-4 rounded-lg px-4 py-3 text-sm font-medium ${
+                    message.includes('received') ? 'bg-[#e8f0ff] text-[#1b4aa1]' : 'bg-red-50 text-red-700'
+                  }`}
+                  role="status"
+                >
+                  {message}
+                </p>
+              ) : null}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#1b4aa1] px-5 text-sm font-bold text-white transition-colors duration-300 hover:bg-[#153a7f] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Submitting
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    Request Resource
+                  </>
+                )}
+              </button>
+
+              <p className="mt-4 text-center text-xs leading-relaxed text-slate-500">
+                We will use your details only to coordinate this technical resource request.
+              </p>
+            </form>
+          </div>
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
-          {/* Form */}
-          <div ref={formRef} className="lg:col-span-3">
-            <div className="bg-white rounded-3xl p-8 lg:p-10 shadow-xl border border-gray-100">
-              {isSubmitted ? (
-                <div className="text-center py-12" aria-live="polite">
-                  <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle className="w-10 h-10 text-green-600" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-800 mb-3">
-                    Resource Request Received
-                  </h3>
-                  <p className="text-muted-foreground mb-6">
-                    Our team has received your review needs and will coordinate
-                    the relevant document direction within 48 hours.
-                  </p>
-                  <Button
-                    onClick={() => {
-                      setApplicationField('');
-                      setCoreMaterial('');
-                      setFormError(null);
-                      setIsSubmitted(false);
-                    }}
-                    variant="outline"
-                    className="border-[#1b4aa1] text-[#1b4aa1] hover:bg-[#1b4aa1] hover:text-white"
-                  >
-                    Request Another Resource
-                  </Button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    {/* Company Name */}
-                    <div className="space-y-2">
-                      <label htmlFor="company-name" className="text-sm font-medium text-slate-800">
-                        Company Name <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        id="company-name"
-                        required
-                        placeholder="Your company name"
-                        className={`h-12 rounded-xl border-gray-200 focus:border-[#1b4aa1] focus:ring-industrial-blue/20 transition-all duration-300 ${
-                          focusedField === 'company' ? 'shadow-[0_4px_20px_rgba(27,74,161,0.15)]' : ''
-                        }`}
-                        onFocus={() => setFocusedField('company')}
-                        onBlur={() => setFocusedField(null)}
-                      />
-                    </div>
-
-                    {/* Contact Person */}
-                    <div className="space-y-2">
-                      <label htmlFor="contact-person" className="text-sm font-medium text-slate-800">
-                        Contact Person <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        id="contact-person"
-                        required
-                        placeholder="Full name"
-                        className={`h-12 rounded-xl border-gray-200 focus:border-[#1b4aa1] focus:ring-industrial-blue/20 transition-all duration-300 ${
-                          focusedField === 'name' ? 'shadow-[0_4px_20px_rgba(27,74,161,0.15)]' : ''
-                        }`}
-                        onFocus={() => setFocusedField('name')}
-                        onBlur={() => setFocusedField(null)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    {/* Email */}
-                    <div className="space-y-2">
-                      <label htmlFor="email-address" className="text-sm font-medium text-slate-800">
-                        Email Address <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        id="email-address"
-                        type="email"
-                        required
-                        placeholder="your@email.com"
-                        className={`h-12 rounded-xl border-gray-200 focus:border-[#1b4aa1] focus:ring-industrial-blue/20 transition-all duration-300 ${
-                          focusedField === 'email' ? 'shadow-[0_4px_20px_rgba(27,74,161,0.15)]' : ''
-                        }`}
-                        onFocus={() => setFocusedField('email')}
-                        onBlur={() => setFocusedField(null)}
-                      />
-                    </div>
-
-                    {/* Phone */}
-                    <div className="space-y-2">
-                      <label htmlFor="phone-number" className="text-sm font-medium text-slate-800">
-                        Phone Number
-                      </label>
-                      <Input
-                        id="phone-number"
-                        type="tel"
-                        placeholder="+1 (555) 000-0000"
-                        className={`h-12 rounded-xl border-gray-200 focus:border-[#1b4aa1] focus:ring-industrial-blue/20 transition-all duration-300 ${
-                          focusedField === 'phone' ? 'shadow-[0_4px_20px_rgba(27,74,161,0.15)]' : ''
-                        }`}
-                        onFocus={() => setFocusedField('phone')}
-                        onBlur={() => setFocusedField(null)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    {/* Application Field */}
-                    <div className="space-y-2">
-                      <label htmlFor="application-field" className="text-sm font-medium text-slate-800">
-                        Application Field <span className="text-red-500">*</span>
-                      </label>
-                      <Select value={applicationField} onValueChange={handleApplicationFieldChange} required>
-                        <SelectTrigger
-                          id="application-field"
-                          aria-label="Application field"
-                          aria-invalid={Boolean(formError && !applicationField)}
-                          className={`h-12 rounded-xl border-gray-200 focus:border-[#1b4aa1] focus:ring-industrial-blue/20 ${
-                            formError && !applicationField ? 'border-red-300' : ''
-                          }`}
-                        >
-                          <SelectValue placeholder="Select application" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {applicationFields.map((field) => (
-                            <SelectItem key={field} value={field.toLowerCase().replace(/\s+/g, '-')}>
-                              {field}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Core Material */}
-                    <div className="space-y-2">
-                      <label htmlFor="core-material" className="text-sm font-medium text-slate-800">
-                        Core Material <span className="text-red-500">*</span>
-                      </label>
-                      <Select value={coreMaterial} onValueChange={handleCoreMaterialChange} required>
-                        <SelectTrigger
-                          id="core-material"
-                          aria-label="Core material"
-                          aria-invalid={Boolean(formError && !coreMaterial)}
-                          className={`h-12 rounded-xl border-gray-200 focus:border-[#1b4aa1] focus:ring-industrial-blue/20 ${
-                            formError && !coreMaterial ? 'border-red-300' : ''
-                          }`}
-                        >
-                          <SelectValue placeholder="Select material" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {coreMaterials.map((material) => (
-                            <SelectItem key={material} value={material.toLowerCase().replace(/\s+/g, '-')}>
-                              {material}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {/* Current Challenges */}
-                  <div className="space-y-2">
-                    <label htmlFor="current-challenges" className="text-sm font-medium text-slate-800">
-                      Document Level & Review Needs
-                    </label>
-                    <Textarea
-                      id="current-challenges"
-                      placeholder="Tell us whether you need a product brief, color TDS, selected marketing TDS, full TDS or test report coordination..."
-                      rows={5}
-                      className={`rounded-xl border-gray-200 focus:border-[#1b4aa1] focus:ring-industrial-blue/20 resize-none transition-all duration-300 ${
-                        focusedField === 'challenges' ? 'shadow-[0_4px_20px_rgba(27,74,161,0.15)]' : ''
-                      }`}
-                      onFocus={() => setFocusedField('challenges')}
-                      onBlur={() => setFocusedField(null)}
-                    />
-                  </div>
-
-                  {formError ? (
-                    <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
-                      {formError}
-                    </div>
-                  ) : null}
-
-                  {/* Submit Button */}
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full h-14 bg-[#1b4aa1] hover:bg-industrial-dark text-white rounded-xl text-base font-medium transition-all duration-300 hover:shadow-[0_4px_20px_rgba(27,74,161,0.15)]-lg disabled:opacity-70"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        Submitting...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-5 h-5 mr-2" />
-                        Request Resource
-                      </>
-                    )}
-                  </Button>
-
-                  <p className="text-xs text-muted-foreground text-center">
-                    We will use your details only to coordinate this technical resource request.
-                  </p>
-                </form>
-              )}
-            </div>
+        <div className="contact-reveal mt-8 grid gap-4 md:grid-cols-3">
+          <a
+            href="mailto:info@grechofiberglass.com"
+            className="group rounded-lg border border-slate-200 bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#1b4aa1]/25 hover:shadow-lg hover:shadow-slate-900/5"
+          >
+            <Mail className="mb-6 h-5 w-5 text-[#1b4aa1]" />
+            <p className="text-sm font-bold text-slate-950">Email</p>
+            <p className="mt-2 text-sm text-slate-600 group-hover:text-[#1b4aa1]">
+              info@grechofiberglass.com
+            </p>
+          </a>
+          <a
+            href="tel:+8618677188374"
+            className="group rounded-lg border border-slate-200 bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#1b4aa1]/25 hover:shadow-lg hover:shadow-slate-900/5"
+          >
+            <Phone className="mb-6 h-5 w-5 text-[#1b4aa1]" />
+            <p className="text-sm font-bold text-slate-950">Phone</p>
+            <p className="mt-2 text-sm text-slate-600 group-hover:text-[#1b4aa1]">
+              +86 186 7718 8374
+            </p>
+          </a>
+          <div className="rounded-lg border border-slate-200 bg-white p-5">
+            <MapPin className="mb-6 h-5 w-5 text-[#1b4aa1]" />
+            <p className="text-sm font-bold text-slate-950">Location</p>
+            <p className="mt-2 text-sm text-slate-600">Nanning, Guangxi, China</p>
           </div>
+        </div>
 
-          {/* Contact Info */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Quick Contact */}
-            <div className="bg-slate-800 rounded-3xl p-8 text-white">
-              <h3 className="text-xl font-bold mb-6">Document Request Support</h3>
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5 text-electric-blue" />
-                  </div>
-                  <div>
-                    <p className="text-white/60 text-sm mb-1">Email</p>
-                    <a
-                      href="mailto:info@grechofiberglass.com"
-                      className="text-white hover:text-electric-blue transition-colors"
-                    >
-                      info@grechofiberglass.com
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5 text-electric-blue" />
-                  </div>
-                  <div>
-                    <p className="text-white/60 text-sm mb-1">Phone</p>
-                    <a
-                      href="tel:+8618677188374"
-                      className="text-white hover:text-electric-blue transition-colors"
-                    >
-                      +86 186 7718 8374
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5 text-electric-blue" />
-                  </div>
-                  <div>
-                    <p className="text-white/60 text-sm mb-1">Address</p>
-                    <p className="text-white">
-                      Nanning, Guangxi, China
-                      <br />
-                      <span className="text-white/60">Postcode: 530000</span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Response Time */}
-            <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-lg">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-800">Resource Coordination</h3>
-              </div>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Our technical team coordinates application and document requests within
-                <span className="text-[#1b4aa1] font-semibold"> 48 hours</span>.
-                For urgent matters, please call us directly.
-              </p>
-            </div>
-
-            {/* Working Hours */}
-            <div className="bg-[#1b4aa1]/5 rounded-3xl p-8 border border-[#1b4aa1]/10">
-              <h3 className="text-lg font-bold text-slate-800 mb-4">Working Hours</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Monday - Friday</span>
-                  <span className="text-slate-800 font-medium">9:00 - 18:00 (GMT+8)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Saturday</span>
-                  <span className="text-slate-800 font-medium">9:00 - 12:00 (GMT+8)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Sunday</span>
-                  <span className="text-slate-800 font-medium">Closed</span>
-                </div>
-              </div>
-            </div>
+        <div className="contact-reveal mt-8 flex flex-col gap-3 rounded-lg border border-[#1b4aa1]/20 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-[#1b4aa1]" />
+            <p className="text-sm leading-relaxed text-slate-600">
+              For faster routing, include board type, core material, intended application,
+              target market and the document level you need.
+            </p>
           </div>
+          <a
+            href="mailto:info@grechofiberglass.com"
+            className="group inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-[#1b4aa1] px-4 text-sm font-bold text-white transition-colors duration-300 hover:bg-[#153a7f]"
+          >
+            Email GRECHO
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </a>
         </div>
       </div>
     </section>

@@ -7,13 +7,13 @@ html {
 
 /* Selection color */
 ::selection {
-  background-color: rgba(0, 71, 171, 0.2);
+  background-color: rgba(27, 74, 161, 0.18);
   color: inherit;
 }
 
 /* Focus styles */
 *:focus-visible {
-  outline: 2px solid #0047AB;
+  outline: 2px solid #1b4aa1;
   outline-offset: 2px;
 }
 
@@ -33,12 +33,12 @@ html {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0047AB;
+  background: #1b4aa1;
 }
 
-/* Image loading placeholder */
+/* Keep transparent brand marks clean. */
 img {
-  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  background: transparent;
 }
 
 /* Prevent text selection on interactive elements */

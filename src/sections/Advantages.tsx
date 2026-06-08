@@ -1,87 +1,85 @@
 import { useEffect, useRef } from 'react';
-import { BookOpen, ClipboardCheck, FileText, Layers, ListChecks, PackageCheck, Users } from 'lucide-react';
+import {
+  Brush,
+  Droplets,
+  Flame,
+  Layers,
+  PackageCheck,
+  Settings,
+} from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { assetPath } from '@/lib/assetPath';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const workflow = [
+const diagnosticCards = [
   {
-    icon: ClipboardCheck,
-    title: 'Clarify Board Application',
-    description: 'Acoustic, insulation or exterior board usage target.',
+    icon: Brush,
+    kicker: 'Visible Surface',
+    title: 'Surface Finish Consistency',
+    description: 'Maintain uniform appearance across visible ceiling and wall surfaces while supporting coating and finishing requirements.',
+    image: assetPath('/grecho-assets/acoustic-material-direction.png?v=20260604'),
   },
   {
     icon: Layers,
-    title: 'Match Facer Direction',
-    description: 'Surface, bonding, width and document fit.',
+    kicker: 'Process Fit',
+    title: 'Bonding & Lamination Fit',
+    description: 'Improve compatibility with adhesives, coating systems and continuous lamination processes.',
+    image: assetPath('/grecho-assets/product-layer-application-visual.png?v=20260604'),
+  },
+  {
+    icon: Droplets,
+    kicker: 'Durability',
+    title: 'Moisture & Mold Review',
+    description: 'Support board performance in environments exposed to humidity, storage fluctuation and long-term service conditions.',
+    image: assetPath('/grecho-assets/mineral-wool-review-factors.png?v=20260604'),
+  },
+  {
+    icon: Flame,
+    kicker: 'Compliance',
+    title: 'Fire & Document Requirements',
+    description: 'Review material options according to project-specific fire performance and documentation requirements.',
+    image: assetPath('/grecho-assets/acoustic-document-support.png?v=20260604'),
+  },
+  {
+    icon: Settings,
+    kicker: 'Production',
+    title: 'Manufacturing Efficiency',
+    description: 'Reduce material variability and improve manufacturing consistency through application-matched facer selection.',
+    image: assetPath('/grecho-assets/support-process-visual.png?v=20260604'),
   },
   {
     icon: PackageCheck,
-    title: 'Coordinate Samples',
-    description: 'Sample direction before product and project review.',
-  },
-  {
-    icon: Users,
-    title: 'Co-development',
-    description: 'Joint review with project needs, sample and production details.',
-  },
-];
-
-const resources = [
-  {
-    icon: BookOpen,
-    type: 'Guide',
-    title: 'Acoustic board facer selection notes.',
-  },
-  {
-    icon: FileText,
-    type: 'Brief',
-    title: 'Documentation stages for fiberglass facer review.',
-  },
-  {
-    icon: ListChecks,
-    type: 'Checklist',
-    title: 'Board application intake checklist.',
+    kicker: 'Samples',
+    title: 'Sample-to-Production Matching',
+    description: 'Align early samples with expected document scope, repeat-order direction and board production details.',
+    image: assetPath('/grecho-assets/product-custom-facing-options.png?v=20260604'),
   },
 ];
 
 export default function Advantages() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const triggers: ScrollTrigger[] = [];
 
     const ctx = gsap.context(() => {
-      const titleTrigger = ScrollTrigger.create({
-        trigger: titleRef.current,
-        start: 'top 80%',
-        onEnter: () => {
-          gsap.fromTo(
-            titleRef.current?.querySelectorAll('.animate-item') || [],
-            { y: 36, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out' }
-          );
-        },
-        once: true,
-      });
-      triggers.push(titleTrigger);
-
-      const cardsTrigger = ScrollTrigger.create({
-        trigger: cardsRef.current,
-        start: 'top 80%',
-        onEnter: () => {
-          gsap.fromTo(
-            cardsRef.current?.querySelectorAll('.workflow-card, .resource-card') || [],
-            { y: 48, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.75, stagger: 0.08, ease: 'power3.out' }
-          );
-        },
-        once: true,
-      });
-      triggers.push(cardsTrigger);
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: contentRef.current,
+          start: 'top 78%',
+          once: true,
+          onEnter: () => {
+            gsap.fromTo(
+              contentRef.current?.querySelectorAll('.diagnostic-reveal') || [],
+              { y: 38, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.75, stagger: 0.075, ease: 'power3.out' }
+            );
+          },
+        })
+      );
     }, sectionRef);
 
     return () => {
@@ -94,66 +92,77 @@ export default function Advantages() {
     <section
       id="advantages"
       ref={sectionRef}
-      className="section-padding bg-gradient-to-b from-white to-[#f5f8fc] relative overflow-hidden"
+      className="relative overflow-hidden bg-white py-20 sm:py-24 lg:py-28"
     >
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#1b4aa1]/20 to-transparent" />
-      <div className="absolute top-24 right-0 w-80 h-80 bg-[#1b4aa1]/5 rounded-full blur-3xl" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
-      <div className="container-wide relative z-10" ref={cardsRef}>
-        <div ref={titleRef} className="max-w-3xl mb-12">
-          <span className="animate-item inline-block text-[#1b4aa1] text-xs font-bold tracking-[0.2em] uppercase mb-4">
-            How GRECHO Supports Your Project
-          </span>
-          <h2 className="animate-item text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-5">
-            A visual path from application brief to technical review.
-          </h2>
-          <p className="animate-item text-base text-slate-600 leading-relaxed">
-            Move from board application details to facer direction, sample review and document coordination with a clearer project path.
+      <div ref={contentRef} className="container-wide">
+        <div className="diagnostic-reveal mb-12 max-w-4xl">
+          <div>
+            <p className="mb-4 inline-flex rounded-lg bg-[#e8f0ff] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[#1b4aa1]">
+              Pain Point Diagnostic
+            </p>
+            <h2 className="text-3xl font-bold leading-tight text-slate-950 sm:text-4xl lg:text-5xl">
+              Start with the board-fitting issue before choosing a facer direction.
+            </h2>
+          </div>
+          <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-600">
+            Review common production and performance concerns to identify the most
+            suitable fiberglass facer direction before requesting samples or documents.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-4 lg:gap-5 mb-16">
-          {workflow.map((item, index) => (
-            <div
-              key={item.title}
-              className="workflow-card group bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:border-[#1b4aa1]/20 transition-all duration-300"
-            >
-              <div className="flex items-center justify-between mb-8">
-                <span className="text-xs font-bold text-[#1b4aa1]/50">0{index + 1}</span>
-                <div className="w-10 h-10 rounded-full bg-[#1b4aa1]/10 flex items-center justify-center group-hover:bg-[#1b4aa1] transition-colors">
-                  <item.icon className="w-5 h-5 text-[#1b4aa1] group-hover:text-white transition-colors" />
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {diagnosticCards.map((item, index) => {
+            const Icon = item.icon;
+
+            return (
+              <article
+                key={item.title}
+                className={`diagnostic-reveal group overflow-hidden rounded-lg border border-slate-200 bg-[#f8faf9] transition-all duration-300 hover:-translate-y-1 hover:border-[#1b4aa1]/40 hover:bg-white hover:shadow-xl hover:shadow-slate-900/5 ${
+                  index === 3 ? 'lg:row-span-1' : ''
+                }`}
+              >
+                {item.image ? (
+                  <div className="relative aspect-[16/8] overflow-hidden sm:aspect-[16/9]">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      loading="lazy"
+                      width="640"
+                      height="360"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
+                    <div className="absolute left-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/90 text-[#1b4aa1] backdrop-blur-sm">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex h-48 items-center justify-center bg-[#1b4aa1] p-6 text-white">
+                    <div className="text-center">
+                      <div className="mx-auto mb-5 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-[#1b4aa1]">
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/55">
+                        {item.kicker}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="min-h-[174px] p-5">
+                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#1b4aa1]">
+                    {item.kicker}
+                  </p>
+                  <h3 className="text-xl font-bold leading-snug text-slate-950">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.description}</p>
                 </div>
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-3">{item.title}</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">{item.description}</p>
-            </div>
-          ))}
+              </article>
+            );
+          })}
         </div>
 
-        <div className="rounded-[2rem] bg-gradient-to-br from-[#12356f] to-[#1b4aa1] p-8 lg:p-10 text-white shadow-2xl shadow-[#1b4aa1]/20">
-          <span className="inline-block text-white/60 text-xs font-bold tracking-[0.2em] uppercase mb-4">
-            Resource Center Preview
-          </span>
-          <div className="grid lg:grid-cols-[1fr_1.2fr] gap-8 items-start">
-            <div>
-              <h3 className="text-2xl lg:text-3xl font-bold mb-4">
-                Compact references for faster facer selection.
-              </h3>
-              <p className="text-white/70 leading-relaxed">
-                Start with concise notes, review briefs and intake checklists before requesting deeper technical documents.
-              </p>
-            </div>
-            <div className="grid sm:grid-cols-3 gap-4">
-              {resources.map((item) => (
-                <div key={item.title} className="resource-card rounded-2xl bg-white/10 border border-white/15 p-5">
-                  <item.icon className="w-5 h-5 text-white/80 mb-5" />
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-white/50 mb-3">{item.type}</p>
-                  <h4 className="text-sm font-semibold leading-snug">{item.title}</h4>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

@@ -1,214 +1,171 @@
 import { useEffect, useRef } from 'react';
-import { Building2, Heart, GraduationCap, Plane, Home, Factory, FileText, ArrowUpRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Building2, Factory, FileText, Home, PanelsTopLeft } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { assetPath } from '@/lib/assetPath';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const applications = [
+const caseStudies = [
+  {
+    icon: PanelsTopLeft,
+    title: 'Acoustic Ceiling Tile Surface Facer',
+    description: 'Clean visible surface direction for ceiling tile systems requiring acoustic and appearance compatibility.',
+    image: assetPath('/homepage-generated/case-acoustic-ceiling-review.jpg?v=20260604'),
+    label: 'Acoustic',
+  },
   {
     icon: Building2,
-    title: 'Acoustic Ceiling Tile Surface Review',
-    description: 'Review broad tile finish, cleanability, color direction and document needs for acoustic ceiling systems.',
-    image: assetPath('/homepage-generated/case-acoustic-ceiling-review.jpg?v=20260603'),
-    stats: 'Acoustic Application',
-  },
-  {
-    icon: Heart,
-    title: 'Public-Space Acoustic Wall Panel Review',
-    description: 'Review facing appearance, surface texture, handling and acoustic wall panel requirements.',
-    image: assetPath('/homepage-generated/case-acoustic-wall-panel-review.jpg?v=20260603'),
-    stats: 'Acoustic Application',
-  },
-  {
-    icon: GraduationCap,
-    title: 'Mineral Wool Board Facer Direction Review',
-    description: 'Review board handling, surface compatibility and sample needs for mineral wool insulation boards.',
-    image: assetPath('/homepage-generated/case-mineral-wool-review.jpg?v=20260603'),
-    stats: 'Mineral Wool Application',
-  },
-  {
-    icon: Plane,
-    title: 'Gypsum Board Reinforced Facing Review',
-    description: 'Review reinforcement direction, bonding fit, board handling compatibility and document needs.',
-    image: assetPath('/homepage-generated/case-gypsum-board-review.jpg?v=20260603'),
-    stats: 'Gypsum Application',
-  },
-  {
-    icon: Home,
-    title: 'PIR / PUR Insulation Board Facer Review',
-    description: 'Review foam compatibility, surface option and technical data for insulation board systems.',
-    image: assetPath('/homepage-generated/case-pir-pur-review.jpg?v=20260603'),
-    stats: 'PIR / PUR Application',
+    title: 'Public Space Acoustic Wall Panel Facer',
+    description: 'Facing appearance, texture and handling review for architectural wall absorption systems.',
+    image: assetPath('/homepage-generated/case-acoustic-wall-panel-review.jpg?v=20260604'),
+    label: 'Interior',
   },
   {
     icon: Factory,
-    title: 'ETICS Exterior-Facing Material Review',
-    description: 'Review facer strength, coating support and exterior insulation system requirements.',
-    image: assetPath('/homepage-generated/case-etics-review.jpg?v=20260603'),
-    stats: 'ETICS Application',
+    title: 'Mineral Wool Board Facer',
+    description: 'Surface protection and lamination fit review for insulation board manufacturing.',
+    image: assetPath('/homepage-generated/case-mineral-wool-review.jpg?v=20260604'),
+    label: 'Insulation',
   },
   {
     icon: FileText,
-    title: 'Technical Document Review Package',
-    description: 'Review product brief, selected TDS, full TDS and report scope before formal project submission.',
-    image: assetPath('/homepage-generated/case-document-review.jpg?v=20260603'),
-    stats: 'Document Review',
+    title: 'Gypsum Board Reinforced Facing Layer',
+    description: 'Reinforcement-facing support for board durability, surface quality and technical comparison.',
+    image: assetPath('/homepage-generated/case-gypsum-board-review.jpg?v=20260604'),
+    label: 'Gypsum',
+  },
+  {
+    icon: Home,
+    title: 'PIR / PUR Insulation Board Facer',
+    description: 'Foam compatibility and facer strength direction for rigid insulation panel production.',
+    image: assetPath('/homepage-generated/case-pir-pur-review.jpg?v=20260604'),
+    label: 'PIR / PUR',
+  },
+  {
+    icon: Building2,
+    title: 'ETICS Exterior Facing Material Reinforcement',
+    description: 'Exterior insulation and finishing system review around coating support and reinforcement needs.',
+    image: assetPath('/homepage-generated/case-etics-review.jpg?v=20260604'),
+    label: 'ETICS',
   },
 ];
 
 export default function Applications() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const triggers: ScrollTrigger[] = [];
+
+    const ctx = gsap.context(() => {
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: contentRef.current,
+          start: 'top 78%',
+          once: true,
+          onEnter: () => {
+            gsap.fromTo(
+              contentRef.current?.querySelectorAll('.case-reveal') || [],
+              { y: 36, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.72, stagger: 0.07, ease: 'power3.out' }
+            );
+          },
+        })
+      );
+    }, sectionRef);
+
+    return () => {
+      triggers.forEach((trigger) => trigger.kill());
+      ctx.revert();
+    };
+  }, []);
+
+  const scrollCases = (direction: 'left' | 'right') => {
+    scrollerRef.current?.scrollBy({
+      left: direction === 'right' ? 360 : -360,
+      behavior: 'smooth',
+    });
+  };
 
   const scrollToContact = () => {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    const triggers: ScrollTrigger[] = [];
-    
-    const ctx = gsap.context(() => {
-      // Title animation
-      const titleTrigger = ScrollTrigger.create({
-        trigger: titleRef.current,
-        start: 'top 80%',
-        onEnter: () => {
-          gsap.fromTo(
-            titleRef.current?.querySelectorAll('.animate-item') || [],
-            { y: 40, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out' }
-          );
-        },
-        once: true,
-      });
-      triggers.push(titleTrigger);
-
-      // Grid items animation
-      const items = gridRef.current?.querySelectorAll('.app-card');
-      items?.forEach((item, index) => {
-        const itemTrigger = ScrollTrigger.create({
-          trigger: item,
-          start: 'top 85%',
-          onEnter: () => {
-            gsap.fromTo(
-              item,
-              { y: 80, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                delay: (index % 3) * 0.1,
-                ease: 'power3.out',
-              }
-            );
-          },
-          once: true,
-        });
-        triggers.push(itemTrigger);
-      });
-    }, sectionRef);
-
-    return () => {
-      triggers.forEach(t => t.kill());
-      ctx.revert();
-    };
-  }, []);
-
   return (
-    <section
-      id="applications"
-      ref={sectionRef}
-      className="section-padding bg-fog relative overflow-hidden"
-    >
-      <div className="container-wide relative z-10">
-        {/* Section Header */}
-        <div ref={titleRef} className="text-center max-w-3xl mx-auto mb-16">
-          <span className="animate-item inline-block text-[#1b4aa1] text-sm font-semibold tracking-wider uppercase mb-4">
-            Application Examples
-          </span>
-          <h2 className="animate-item text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 mb-6">
-            Application{' '}
-            <span className="text-gradient">Examples</span>
-          </h2>
-          <p className="animate-item text-lg text-muted-foreground">
-            Anonymous board-facing review scenarios for acoustic, mineral wool,
-            gypsum and insulation board applications.
-          </p>
-        </div>
+    <section id="applications" ref={sectionRef} className="overflow-hidden bg-[#f5f8f6] py-20 sm:py-24 lg:py-28">
+      <div ref={contentRef} className="container-wide">
+        <div className="case-reveal mb-10 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <p className="mb-4 inline-flex rounded-lg bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[#1b4aa1] shadow-sm">
+              Application Examples
+            </p>
+            <h2 className="max-w-3xl text-3xl font-bold leading-tight text-slate-950 sm:text-4xl lg:text-5xl">
+              Explore where GRECHO fiberglass facer materials are used.
+            </h2>
+          </div>
 
-        {/* Applications Grid - Masonry Style */}
-        <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {applications.map((app, index) => (
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              key={index}
-              onClick={scrollToContact}
-              aria-label={`Discuss ${app.title} application`}
-              className={`app-card group relative w-full rounded-3xl overflow-hidden text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1b4aa1] focus-visible:ring-offset-4 ${
-                index === 0 || index === 3 ? 'md:row-span-2' : ''
-              }`}
+              onClick={() => scrollCases('left')}
+              aria-label="Previous application examples"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-800 transition-all duration-300 hover:bg-[#1b4aa1] hover:text-white"
             >
-              {/* Background Image */}
-              <div className="relative h-full min-h-[280px] md:min-h-[320px]">
-                <img
-                  src={app.image}
-                  alt={app.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-800 via-slate-800/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-              </div>
-
-              {/* Content Overlay */}
-              <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                {/* Icon */}
-                <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#1b4aa1] transition-colors duration-500">
-                  <app.icon className="w-6 h-6 text-white" />
-                </div>
-
-                {/* Title */}
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-electric-blue transition-colors duration-300">
-                  {app.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-white/70 text-sm mb-3">{app.description}</p>
-
-                {/* Stats Badge */}
-                <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white/90">
-                    {app.stats}
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-sm transition-all duration-300 group-hover:bg-[#1b4aa1] group-hover:text-white">
-                    View Example
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </span>
-                </div>
-              </div>
-
-              {/* Hover Border Effect */}
-              <div className="absolute inset-0 rounded-3xl border-2 border-transparent group-hover:border-[#1b4aa1]/50 transition-colors duration-500 pointer-events-none" />
+              <ArrowLeft className="h-4 w-4" />
             </button>
-          ))}
+            <button
+              type="button"
+              onClick={() => scrollCases('right')}
+              aria-label="Next application examples"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-[#1b4aa1] text-white transition-all duration-300 hover:bg-[#153a7f]"
+            >
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
-        {/* Bottom Note */}
-        <div className="mt-12 text-center">
-          <p className="text-muted-foreground text-sm">
-            Need more examples?{' '}
-            <a
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToContact();
-              }}
-              className="text-[#1b4aa1] font-medium hover:underline"
-            >
-              View all application examples
-            </a>
-          </p>
+        <div
+          ref={scrollerRef}
+          className="case-reveal hide-scrollbar -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+        >
+          {caseStudies.map((study) => {
+            const Icon = study.icon;
+
+            return (
+              <button
+                key={study.title}
+                type="button"
+                onClick={scrollToContact}
+                className="group relative h-[390px] min-w-[282px] snap-start overflow-hidden rounded-lg text-left shadow-lg shadow-slate-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-900/10 sm:min-w-[324px] lg:min-w-[354px]"
+              >
+                <img
+                  src={study.image}
+                  alt={study.title}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+                <div className="absolute inset-0 flex flex-col justify-end p-5">
+                  <div className="mb-auto flex items-center justify-between">
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-white/[0.12] text-white backdrop-blur-md transition-colors duration-300 group-hover:bg-[#1b4aa1]">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="rounded-lg bg-white/[0.12] px-3 py-1.5 text-xs font-bold text-white backdrop-blur-md">
+                      {study.label}
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-bold leading-tight text-white">{study.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-white/70">{study.description}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#bfdbfe]">
+                    View Review Path
+                    <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </span>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>
