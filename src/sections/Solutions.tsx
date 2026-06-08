@@ -2,7 +2,12 @@ import { useEffect, useRef } from 'react';
 import { AlertTriangle, CheckCircle, ClipboardCheck, FileText, Layers, Settings } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { assetPath } from '@/lib/assetPath';
+import surfaceFinishImage from '@/assets/diagnostics/surface-finish.jpg';
+import bondingFitImage from '@/assets/diagnostics/bonding-fit.jpg';
+import moistureReviewImage from '@/assets/diagnostics/moisture-review.jpg';
+import complianceDocumentsImage from '@/assets/diagnostics/compliance-documents.jpg';
+import productionMatchingImage from '@/assets/diagnostics/production-matching.jpg';
+import requestScopeImage from '@/assets/diagnostics/request-scope.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,42 +17,42 @@ const diagnostics = [
     kicker: 'Visible Surface',
     title: 'Surface Finish Consistency',
     description: 'Check appearance, texture, color direction and cleanliness expectations before facer selection.',
-    image: assetPath('/homepage-generated/solution-acoustic-ceiling-wall.jpg?v=20260608'),
+    image: surfaceFinishImage,
   },
   {
     icon: CheckCircle,
     kicker: 'Process Fit',
     title: 'Bonding & Lamination Fit',
     description: 'Review board process, rolling direction and adhesive fit before sample confirmation.',
-    image: assetPath('/homepage-generated/solution-gypsum-board.jpg?v=20260608'),
+    image: bondingFitImage,
   },
   {
     icon: AlertTriangle,
     kicker: 'Durability',
     title: 'Moisture / Mold / Cleanability',
     description: 'Clarify moisture resistance, cleaning tolerance and visible surface stability needs.',
-    image: assetPath('/homepage-generated/solution-mineral-wool-board.jpg?v=20260608'),
+    image: moistureReviewImage,
   },
   {
     icon: FileText,
     kicker: 'Compliance',
     title: 'Fire & Compliance Documents',
     description: 'Identify data sheets, declarations and compliance documents required by your team.',
-    image: assetPath('/homepage-generated/case-document-review.jpg?v=20260608'),
+    image: complianceDocumentsImage,
   },
   {
     icon: Settings,
     kicker: 'Production',
     title: 'Sample-to-Production Matching',
     description: 'Reduce mismatch between early samples, selected direction and repeat-order expectations.',
-    image: assetPath('/homepage-generated/case-gypsum-board-review.jpg?v=20260608'),
+    image: productionMatchingImage,
   },
   {
     icon: ClipboardCheck,
     kicker: 'Project Intake',
     title: 'Request Scope Clarity',
     description: 'Capture application, core material, finish and document needs before technical review.',
-    image: assetPath('/homepage-generated/solution-pir-pur-etics.jpg?v=20260608'),
+    image: requestScopeImage,
   },
 ];
 
