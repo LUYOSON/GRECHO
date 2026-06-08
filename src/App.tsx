@@ -47,9 +47,9 @@ function App() {
         <Hero />
         <Products />
         <Solutions />
+        <Applications />
         <Advantages />
         <CaseStudies />
-        <Applications />
         <Contact />
       </main>
       <Footer />
