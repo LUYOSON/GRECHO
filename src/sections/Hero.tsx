@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, BadgeCheck } from 'lucide-react';
+import { ArrowRight, Layers, MessageCircle } from 'lucide-react';
 import gsap from 'gsap';
 import { assetPath } from '@/lib/assetPath';
 
-const heroVideoPath = assetPath('/videos/banner.mp4?v=20260604');
-const heroPoster = assetPath('/homepage-generated/hero-poster.jpg?v=20260604');
+const heroVideoPath = assetPath('/videos/banner.mp4?v=20260603');
+const heroPoster = assetPath('/homepage-generated/hero-poster.jpg?v=20260603');
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [videoReady, setVideoReady] = useState(false);
 
@@ -28,45 +31,55 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     const ctx = gsap.context(() => {
-      if (reduceMotion) {
-        gsap.set('.hero-reveal', { clearProps: 'all' });
-        return;
-      }
+      gsap.fromTo(
+        titleRef.current,
+        { y: 36, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: 'power4.out', delay: 0.25 }
+      );
 
       gsap.fromTo(
-        '.hero-reveal',
-        { y: 28, opacity: 0 },
+        subtitleRef.current,
+        { y: 22, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out', delay: 0.5 }
+      );
+
+      gsap.fromTo(
+        actionsRef.current?.children || [],
+        { y: 18, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.9,
+          duration: 0.65,
           stagger: 0.1,
           ease: 'power3.out',
-          delay: 0.18,
+          delay: 0.72,
         }
       );
+
     }, heroRef);
 
     return () => ctx.revert();
   }, []);
 
   const scrollToSection = (href: string) => {
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
     <section
       id="home"
       ref={heroRef}
-      className="relative h-[82dvh] min-h-[640px] max-h-[780px] overflow-hidden bg-slate-950 text-white"
+      className="relative h-dvh min-h-[720px] w-full overflow-hidden bg-slate-950"
     >
+      {/* Video-ready media banner. Replace public/videos/banner.mp4 to update the hero footage. */}
       <div className="absolute inset-0">
         <img
           src={heroPoster}
-          alt="Fiberglass facer material and board application review"
+          alt="GRECHO fiberglass material and architectural application"
           className={`absolute inset-0 h-full w-full object-cover object-[58%_center] transition-opacity duration-700 ${
             videoReady ? 'opacity-0' : 'opacity-100'
           }`}
@@ -89,43 +102,59 @@ export default function Hero() {
             <source src={videoSrc} type="video/mp4" />
           </video>
         ) : null}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/[0.18] to-slate-950/[0.78]" />
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-slate-950 via-slate-950/55 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/5 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
       </div>
 
-      <div className="container-wide relative z-10 flex h-full flex-col justify-end pb-7 pt-28 sm:pb-9 lg:pb-10">
-        <div className="mx-auto max-w-5xl text-center">
-          <p className="hero-reveal mb-4 text-xs font-bold uppercase tracking-[0.26em] text-white/70">
-            Application-Matched Fiberglass Facer Solutions
-          </p>
-          <h1 className="hero-reveal mx-auto max-w-5xl text-4xl font-bold leading-[1.04] sm:text-5xl lg:text-6xl">
-            GRECHO helps board manufacturers choose the right facer direction.
-          </h1>
-          <p className="hero-reveal mx-auto mt-5 max-w-3xl text-base leading-relaxed text-white/80 sm:text-lg">
-            From acoustic ceilings and wall panels to mineral wool, gypsum and exterior insulation
-            boards, GRECHO supports application review, sample coordination and technical document
-            preparation before projects move into production.
-          </p>
+      <div className="relative z-10 flex h-full flex-col justify-end pb-10 pt-32 sm:pb-14 lg:pb-16">
+        <div className="container-wide w-full">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,760px)_1fr] lg:items-end">
+            <div className="max-w-3xl">
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-white/80">
+                Fiberglass Facer Solution Provider
+              </p>
 
-          <div className="hero-reveal mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <button
-              type="button"
-              onClick={() => scrollToSection('#contact')}
-              className="group inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#1b4aa1] px-6 text-sm font-bold text-white shadow-lg shadow-[#1b4aa1]/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#153a7f] sm:w-auto"
-            >
-              Request a Sample
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection('#products')}
-              className="group inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-white/35 bg-white/10 px-6 text-sm font-bold text-white backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-[#1b4aa1] sm:w-auto"
-            >
-              Request Technical Review
-              <BadgeCheck className="h-4 w-4 transition-transform duration-300 group-hover:scale-105" />
-            </button>
+              <h1
+                ref={titleRef}
+                className="max-w-3xl text-3xl font-semibold leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-[46px]"
+              >
+                Application-Matched Fiberglass Facer Solutions for Board Manufacturers
+              </h1>
+
+              <p
+                ref={subtitleRef}
+                className="mt-5 max-w-2xl text-base font-medium leading-relaxed text-white/85 sm:text-lg"
+              >
+                GRECHO helps acoustic, mineral wool, gypsum and PIR/PUR/ETICS board
+                manufacturers match reliable fiberglass facer directions through
+                material selection, sample coordination, technical documentation and
+                selected supply-chain coordination.
+              </p>
+
+              <div ref={actionsRef} className="mt-7 flex flex-wrap items-center gap-6">
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('#contact')}
+                  className="group inline-flex min-h-11 items-center gap-2 border-b border-white/75 pb-1 text-sm font-semibold text-white transition-colors duration-300 hover:border-white hover:text-white"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Request a Sample
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('#products')}
+                  className="group inline-flex min-h-11 items-center gap-2 border-b border-white/45 pb-1 text-sm font-semibold text-white/85 transition-colors duration-300 hover:border-white hover:text-white"
+                >
+                  <Layers className="h-4 w-4" />
+                  Request Technical Data
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </div>
+            </div>
+
+            <div aria-hidden="true" />
           </div>
-
         </div>
       </div>
     </section>

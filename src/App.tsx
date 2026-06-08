@@ -9,7 +9,6 @@ import Products from './sections/Products';
 import Applications from './sections/Applications';
 import Advantages from './sections/Advantages';
 import CaseStudies from './sections/CaseStudies';
-import FAQ from './sections/FAQ';
 import Contact from './sections/Contact';
 import Footer from './sections/Footer';
 
@@ -49,9 +48,8 @@ function App() {
         <Products />
         <Solutions />
         <Advantages />
-        <Applications />
         <CaseStudies />
-        <FAQ />
+        <Applications />
         <Contact />
       </main>
       <Footer />
