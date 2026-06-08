@@ -2,39 +2,52 @@ import { useEffect, useRef } from 'react';
 import { AlertTriangle, CheckCircle, ClipboardCheck, FileText, Layers, Settings } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { assetPath } from '@/lib/assetPath';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const diagnostics = [
   {
     icon: Layers,
+    kicker: 'Visible Surface',
     title: 'Surface Finish Consistency',
     description: 'Check appearance, texture, color direction and cleanliness expectations before facer selection.',
+    image: assetPath('/grecho-assets/acoustic-material-direction.png?v=20260608'),
   },
   {
     icon: CheckCircle,
+    kicker: 'Process Fit',
     title: 'Bonding & Lamination Fit',
     description: 'Review board process, rolling direction and adhesive fit before sample confirmation.',
+    image: assetPath('/grecho-assets/product-layer-application-visual.png?v=20260608'),
   },
   {
     icon: AlertTriangle,
+    kicker: 'Durability',
     title: 'Moisture / Mold / Cleanability',
     description: 'Clarify moisture resistance, cleaning tolerance and visible surface stability needs.',
+    image: assetPath('/grecho-assets/mineral-wool-review-factors.png?v=20260608'),
   },
   {
     icon: FileText,
+    kicker: 'Compliance',
     title: 'Fire & Compliance Documents',
     description: 'Identify data sheets, declarations and compliance documents required by your team.',
+    image: assetPath('/grecho-assets/acoustic-document-support.png?v=20260608'),
   },
   {
     icon: Settings,
+    kicker: 'Production',
     title: 'Sample-to-Production Matching',
     description: 'Reduce mismatch between early samples, selected direction and repeat-order expectations.',
+    image: assetPath('/grecho-assets/support-process-visual.png?v=20260608'),
   },
   {
     icon: ClipboardCheck,
+    kicker: 'Project Intake',
     title: 'Request Scope Clarity',
     description: 'Capture application, core material, finish and document needs before technical review.',
+    image: assetPath('/grecho-assets/product-custom-facing-options.png?v=20260608'),
   },
 ];
 
@@ -121,20 +134,37 @@ export default function Solutions() {
           </p>
         </div>
 
-        <div ref={cardsRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 perspective-1000">
+        <div ref={cardsRef} className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {diagnostics.map((item) => (
-            <div
+            <article
               key={item.title}
-              className="solution-card group bg-white rounded-2xl p-6 lg:p-8 border border-gray-100 hover:border-[#1b4aa1]/30 hover:shadow-[0_4px_20px_rgba(27,74,161,0.15)]-lg transition-all duration-500 preserve-3d"
+              className="solution-card group overflow-hidden rounded-lg border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#1b4aa1]/35 hover:shadow-xl hover:shadow-slate-900/5"
             >
-              <div className="w-14 h-14 bg-fog rounded-xl flex items-center justify-center mb-6 group-hover:bg-[#1b4aa1] group-hover:scale-110 transition-all duration-500">
-                <item.icon className="w-7 h-7 text-[#1b4aa1] group-hover:text-white transition-colors duration-500" />
+              <div className="relative aspect-[16/9] overflow-hidden bg-slate-100">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  loading="lazy"
+                  width="640"
+                  height="360"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-white/5" />
+                <div className="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-lg bg-white/95 text-[#1b4aa1] shadow-sm">
+                  <item.icon className="h-5 w-5" />
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-[#1b4aa1] transition-colors duration-300">
-                {item.title}
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
-            </div>
+
+              <div className="min-h-[180px] p-5 sm:p-6">
+                <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#1b4aa1]">
+                  {item.kicker}
+                </p>
+                <h3 className="text-xl font-bold leading-snug text-slate-900 transition-colors duration-300 group-hover:text-[#1b4aa1]">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.description}</p>
+              </div>
+            </article>
           ))}
         </div>
 
